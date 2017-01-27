@@ -23,7 +23,7 @@ module.exports = (function() {
     }
 
     _ensureLength(arr, length) {
-      return [...Array(length).keys()].map(i => arr[arr.length - i - 1] || 0).reverse();
+      return Array.from(Array(length).keys()).map(i => arr[arr.length - i - 1] || 0).reverse();
     }
 
     /**
@@ -76,7 +76,11 @@ module.exports = (function() {
       return omegaOled.init();
     }
 
-    writeText(text, reset = true) {
+    writeText(text, reset) {
+      if (typeof reset === 'undefined') {
+        reset = true;
+      }
+
       text = text.split('');
 
       const previousChainModeSetting = omegaOled.chainMode();
@@ -86,12 +90,12 @@ module.exports = (function() {
         omegaOled.cursorPixel(0, 0);
 
         let fillCharacters = totalChars - text.length;
-        text = text.concat([...Array(fillCharacters < 0 ? 0 : fillCharacters).keys()].map(() => ' '));
+        text = text.concat(Array.from(Array(fillCharacters < 0 ? 0 : fillCharacters).keys()).map(() => ' '));
       }
 
       let matricesArray;
       for (let row = 0; row < Math.ceil(text.length / cols); row++) {
-        matricesArray = [...Array(cols).keys()]
+        matricesArray = Array.from(Array(cols).keys())
           .map(i => text[(row * cols) + i])
           .map(char => char ? char : ' ')
           .map(char => this._getCharMatrices(char));
