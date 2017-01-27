@@ -1,0 +1,22 @@
+{
+    "name": "onion-omega-oled-text",
+    "description": "Write text with big 16x16 font on the OLED expansion of the Onion Omega / Omega2",
+    "version": "1.0.0",
+    "main": "index.js",
+    "maintainers": [
+        {
+            "name": "Jonathan Reisdorf",
+            "email": "fishlevel@livespam.org"
+        }
+    ],
+    "licenses": [
+        {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "repository" : {
+        "type" : "git",
+        "url" : "https://github.com/jonathan-reisdorf/node-onion-omega-oled-text"
+    }
+}
