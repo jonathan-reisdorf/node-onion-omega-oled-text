@@ -1,7 +1,7 @@
 {
   "name": "onion-omega-oled-text",
   "description": "Write text with big 16x16 font on the OLED expansion of the Onion Omega / Omega2",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "index.js",
   "maintainers": [
     {
