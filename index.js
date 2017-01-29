@@ -79,7 +79,7 @@ module.exports = (function() {
         for (let part = 0; part < charSize / bitSize; part++) {
           matricesArray
             .map(matrices => matrices[part]
-              .forEach(byte => omegaOled.writeByte('0x' + byte))
+              .forEach(byte => omegaOled.writeByte(byte))
           );
         }
       }
