@@ -3,9 +3,7 @@ module.exports = (function() {
 
   const omegaOled = require('onion-omega-oled');
 
-  const convert = require('./lib/convert');
   const chars   = require('./lib/chars');
-  const rotate  = require('./lib/rotate');
 
   const charSize = 16;
   const bitSize  = 8;
@@ -20,21 +18,6 @@ module.exports = (function() {
   class OmegaOledText {
     constructor() {
       this._cache = {};
-    }
-
-    _ensureLength(arr, length) {
-      return Array.from(Array(length).keys()).map(i => arr[arr.length - i - 1] || 0).reverse();
-    }
-
-    /**
-     * convert byte array to bit matrix
-     * @param arr
-     * @private
-     */
-    _toBitMatrix(arr) {
-      return arr.map(byte => convert.dec2bin(byte).split('').map(bit => parseInt(bit, 10)))
-        .map(bits => this._ensureLength(bits, bitSize))
-        .map(bits => bits.map(bit => bit ? 0 : 1));
     }
 
     /**
@@ -55,16 +38,9 @@ module.exports = (function() {
         return this._getCharMatrices(' ');
       }
 
-      let _firstHalf  = this._toBitMatrix(chars[char].filter((byte, i) => (i+1) % 2));
-      let _secondHalf = this._toBitMatrix(chars[char].filter((byte, i) => i % 2));
-
       const result = [
-        rotate(_firstHalf.slice(0, _firstHalf.length / 2))
-          .concat(rotate(_secondHalf.slice(0, _secondHalf.length / 2)))
-          .map(bits => this._ensureLength(convert.bin2hex(bits.join('')).split(''), 2).join('')),
-        rotate(_firstHalf.slice(_firstHalf.length / 2))
-          .concat(rotate(_secondHalf.slice(_secondHalf.length / 2)))
-          .map(bits => this._ensureLength(convert.bin2hex(bits.join('')).split(''), 2).join(''))
+        chars[char].slice(0, chars[char].length / 2),
+        chars[char].slice(chars[char].length / 2)
       ];
 
       this._cache[char] = result;
