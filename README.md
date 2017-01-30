@@ -43,8 +43,9 @@ Within your project, create a .js file like this:
 ```
 var omegaOledText = require('onion-omega-oled-text');
 
-omegaOledText.init();
-omegaOledText.writeText('This is a test!');
+omegaOledText.init().then(function() {
+  omegaOledText.writeText('Hello world!');
+});
 ```
 
 # Commands

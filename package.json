@@ -1,7 +1,7 @@
 {
   "name": "onion-omega-oled-text",
   "description": "Write text with big 16x16 font on the OLED expansion of the Onion Omega / Omega2",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "index.js",
   "maintainers": [
     {
@@ -15,6 +15,6 @@
     "url": "https://github.com/jonathan-reisdorf/node-onion-omega-oled-text"
   },
   "dependencies": {
-    "onion-omega-oled": "^1.0.4"
+    "onion-omega-oled": "^1.0.6"
   }
 }
