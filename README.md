@@ -44,7 +44,7 @@ Within your project, create a .js file like this:
 var omegaOledText = require('onion-omega-oled-text');
 
 omegaOledText.init().then(function() {
-  omegaOledText.writeText('Hello world!');
+  omegaOledText.writeText('Hello\nworld!');
 });
 ```
 
@@ -58,3 +58,13 @@ and other contents will be erased.
 
 If you need more commands, have a look at:
 https://github.com/jonathan-reisdorf/node-onion-omega-oled
+
+# Additional information
+
+## How many 16x16 characters fit onto the OLED screen?
+
+8 characters x 4 lines
+
+## Line breaks
+
+As shown in the example, you can create line breaks by inserting \n into your text.

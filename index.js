@@ -57,7 +57,7 @@ module.exports = (function() {
         reset = true;
       }
 
-      text = text.split('');
+      text = String(text).split('\n').map((part, i, arr) => i < arr.length - 1 ? part + ' '.repeat(cols - (part.length % cols)) : part).join('').split('');
 
       const previousChainModeSetting = omegaOled.chainMode();
       omegaOled.chainMode(true);
