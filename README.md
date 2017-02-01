@@ -48,6 +48,10 @@ omegaOledText.init().then(function() {
 });
 ```
 
+## More examples
+
+Check out example.clock.js
+
 # Commands
 
 - `init()`
