@@ -3,10 +3,10 @@ module.exports = (function() {
 
   const omegaOled = require('onion-omega-oled');
 
-  const chars   = require('./lib/chars');
+  const chars = require('./lib/chars');
 
   const charSize = 16;
-  const bitSize  = 8;
+  const byteSize  = 8;
 
   const displayWidth  = 128;
   const displayHeight = 64;
@@ -17,7 +17,8 @@ module.exports = (function() {
 
   class OmegaOledText {
     constructor() {
-      this._cache = {};
+      this._fontCache = {};
+      this._renderCache = [];
     }
 
     /**
@@ -30,8 +31,8 @@ module.exports = (function() {
         return false;
       }
 
-      if (this._cache[char]) {
-        return this._cache[char];
+      if (this._fontCache[char]) {
+        return this._fontCache[char];
       }
 
       if (!chars[char]) {
@@ -43,7 +44,7 @@ module.exports = (function() {
         chars[char].slice(chars[char].length / 2)
       ];
 
-      this._cache[char] = result;
+      this._fontCache[char] = result;
 
       return result;
     }
@@ -66,21 +67,42 @@ module.exports = (function() {
         omegaOled.cursorPixel(0, 0);
 
         let fillCharacters = totalChars - text.length;
-        text = text.concat(Array.from(Array(fillCharacters < 0 ? 0 : fillCharacters).keys()).map(() => ' '));
+        let newRenderCache = text.concat(Array.from(Array(fillCharacters < 0 ? 0 : fillCharacters).keys()).map(() => ' '));
+        text = newRenderCache.map((char, i) => this._renderCache[i] === char ? false : char);
+        this._renderCache = newRenderCache;
+      } else {
+        this._renderCache = [];
       }
 
       let matricesArray;
+      const specialChars = [false];
+
       for (let row = 0; row < Math.ceil(text.length / cols); row++) {
         matricesArray = Array.from(Array(cols).keys())
           .map(i => text[(row * cols) + i])
-          .map(char => char ? char : ' ')
-          .map(char => this._getCharMatrices(char));
+          .map(char => char || specialChars.indexOf(char) !== -1 ? char : ' ')
+          .map(char => specialChars.indexOf(char) !== -1 ? char : this._getCharMatrices(char));
 
-        for (let part = 0; part < charSize / bitSize; part++) {
+        for (let part = 0; part < charSize / byteSize; part++) {
           matricesArray
-            .map(matrices => matrices[part]
-              .forEach(byte => omegaOled.writeByte(byte))
-          );
+            .map(matrices => matrices ? matrices[part] : matrices)
+            .forEach((matrix, i, matrices) => {
+              if (matrix) {
+                return matrix.forEach(byte => omegaOled.writeByte(byte));
+              }
+
+              const nextIsNextRow = i + 1 > cols - 1;
+
+              if (!matrices[i + 1]) {
+                if (nextIsNextRow && matricesArray[0][part + 1]) {
+                  omegaOled.cursorPixel((row * (charSize / byteSize)) + part + 1, 0);
+                }
+
+                return;
+              }
+
+              omegaOled.cursorPixel(((row + (nextIsNextRow ? 1 : 0)) * (charSize / byteSize)) + part, nextIsNextRow ? 0 : (i + 1) * charSize);
+            });
         }
       }
 
