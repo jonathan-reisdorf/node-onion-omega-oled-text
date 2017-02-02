@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Character Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: monospace;
+        }
+        .col {
+            display: inline-block;
+            border: 1px solid #ccc;
+            padding: 0.25em 0.5em;
+            cursor: pointer;
+            user-select: none;
+        }
+    </style>
+    <script>window.module = {}</script>
+    <script src="./lib/chars.js"></script>
+    <script>
+        window.chars = window.module.exports;
+        delete window.module;
+    </script>
+
+    <script src="./chareditor/jquery.min.js"></script>
+    <script src="./chareditor/editor.js"></script>
+</head>
+<body>
+</body>
+</html>
