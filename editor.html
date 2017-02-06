@@ -169,11 +169,17 @@
             Object.keys(window.chars || {}).forEach(char => $characterSelect.append($('<option></option>').prop('value', char).html(char)));
             $characterSelect.change(() => renderFromChar($characterSelect.val()));
 
-            $body.find('.col').click(function() {
+            let isMouseDown = false;
+            $body.mousedown(() => isMouseDown = true).mouseup(() => isMouseDown = false)
+              .find('.col').mousedown(function() {
                 const $col = $(this);
                 const newState = $col.data('state') ? 0 : 1;
                 setState($col, newState);
                 generateCode();
+            }).mouseenter(function() {
+                if (isMouseDown) {
+                    $(this).trigger('mousedown');
+                }
             });
 
             $input.on('input', () => generateFromCode($input.val().replace(/[^0-9a-f,x]/g, '')));
