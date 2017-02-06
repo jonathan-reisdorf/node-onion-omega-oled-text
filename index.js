@@ -50,7 +50,7 @@ module.exports = (function() {
     }
 
     init() {
-      return omegaOled.init();
+      return omegaOled.init().then(() => this._renderCache = ' '.repeat(totalChars).split(''));
     }
 
     addCharacter(character, byteMatrix) {
@@ -84,6 +84,8 @@ module.exports = (function() {
       }
 
       let matricesArray;
+      let needsJump = false;
+
       const specialChars = [false];
 
       for (let row = 0; row < Math.ceil(text.length / cols); row++) {
@@ -97,20 +99,15 @@ module.exports = (function() {
             .map(matrices => matrices ? matrices[part] : matrices)
             .forEach((matrix, i, matrices) => {
               if (matrix) {
+                if (needsJump) {
+                  omegaOled.cursorPixel((row * (charSize / byteSize)) + part, i * charSize);
+                  needsJump = false;
+                }
+
                 return matrix.forEach(byte => omegaOled.writeByte(byte));
               }
 
-              const nextIsNextRow = i + 1 > cols - 1;
-
-              if (!matrices[i + 1]) {
-                if (nextIsNextRow && matricesArray[0][part + 1]) {
-                  omegaOled.cursorPixel((row * (charSize / byteSize)) + part + 1, 0);
-                }
-
-                return;
-              }
-
-              omegaOled.cursorPixel(((row + (nextIsNextRow ? 1 : 0)) * (charSize / byteSize)) + part, nextIsNextRow ? 0 : (i + 1) * charSize);
+              needsJump = true;
             });
         }
       }
