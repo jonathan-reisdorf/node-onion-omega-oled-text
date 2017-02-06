@@ -53,6 +53,15 @@ module.exports = (function() {
       return omegaOled.init();
     }
 
+    addCharacter(character, byteMatrix) {
+      if (typeof character !== 'string' || character.length !== 1 || typeof byteMatrix !== 'object' || byteMatrix.length !== charSize * (charSize / byteSize)) {
+        return false;
+      }
+
+      chars[character] = byteMatrix;
+      return true;
+    }
+
     writeText(text, reset) {
       if (typeof reset === 'undefined') {
         reset = true;
