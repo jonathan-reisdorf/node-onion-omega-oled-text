@@ -68,6 +68,8 @@ module.exports = (function() {
       if (secondsOfInactivity) {
         this._standbyId = setTimeout(this._standbyFunction, secondsOfInactivity * 1000);
       }
+
+      return Promise.resolve(secondsOfInactivity);
     }
 
     addCharacter(character, byteMatrix) {
@@ -88,8 +90,8 @@ module.exports = (function() {
 
       text = String(text).split('\n')
         .map((part, i, arr) => i < arr.length - 1 ? part + ' '.repeat(cols - (part.length % cols)) : part)
-        .substr(0, totalChars)
         .join('')
+        .substr(0, totalChars)
         .split('');
 
       const previousChainModeSetting = omegaOled.chainMode();
