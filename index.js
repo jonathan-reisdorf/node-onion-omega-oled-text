@@ -19,6 +19,7 @@ module.exports = (function() {
     constructor() {
       this._fontCache = {};
       this._renderCache = [];
+      this._standbyTimeout = 0;
     }
 
     /**
@@ -49,8 +50,24 @@ module.exports = (function() {
       return result;
     }
 
+    _standbyFunction() {
+      return omegaOled.power(false);
+    }
+
     init() {
       return omegaOled.init().then(() => this._renderCache = ' '.repeat(totalChars).split(''));
+    }
+
+    setStandbyTimeout(secondsOfInactivity) {
+      this._standbyTimeout = secondsOfInactivity || 0;
+
+      if (this._standbyId) {
+        clearTimeout(this._standbyId);
+      }
+
+      if (secondsOfInactivity) {
+        this._standbyId = setTimeout(this._standbyFunction, secondsOfInactivity * 1000);
+      }
     }
 
     addCharacter(character, byteMatrix) {
@@ -63,14 +80,24 @@ module.exports = (function() {
     }
 
     writeText(text, reset) {
+      this.setStandbyTimeout(this._standbyTimeout);
+
       if (typeof reset === 'undefined') {
         reset = true;
       }
 
-      text = String(text).split('\n').map((part, i, arr) => i < arr.length - 1 ? part + ' '.repeat(cols - (part.length % cols)) : part).join('').split('');
+      text = String(text).split('\n')
+        .map((part, i, arr) => i < arr.length - 1 ? part + ' '.repeat(cols - (part.length % cols)) : part)
+        .substr(0, totalChars)
+        .join('')
+        .split('');
 
       const previousChainModeSetting = omegaOled.chainMode();
       omegaOled.chainMode(true);
+
+      if (!omegaOled.power()) {
+        omegaOled.power(true);
+      }
 
       if (reset) {
         omegaOled.cursorPixel(0, 0);

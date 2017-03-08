@@ -96,6 +96,10 @@ If reset is set to true (default), text will start at the beginning of the displ
 and other contents will be erased.
 - `addCharacter(character, byteMatrix)`
 Add a new character that can be used in `writeText` or replace an existing one, see custom character example above
+- `setStandbyTimeout(secondsOfInactivity = 0)`
+Configures the time of inactivity (in seconds) after which the display should turn off to save power.
+Display is turned back on automatically when `writeText` is called next time.
+Disabled (`0`) by default.
 
 If you need more commands, have a look at:
 https://github.com/jonathan-reisdorf/node-onion-omega-oled
